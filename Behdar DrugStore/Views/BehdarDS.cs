@@ -678,7 +678,14 @@ namespace Behdar_DrugStore
                 }
                 else if (Content.SelectedTab == tabDrug)
                 {
-                    DrugC.Delete(int.Parse(drugGridView.SelectedRows[0].Cells[0].Value.ToString()));
+                    try
+                    {
+                        DrugC.Delete(int.Parse(drugGridView.SelectedRows[0].Cells[0].Value.ToString()));
+                    }
+                    catch
+                    {
+                        MessageBox.Show("به دلیل وجود ارجاعاتی در نسخه ها به این دارو، این دارو قابل حذف نیست");
+                    }
                     DrugC.All();
                     drugGridView.Refresh();
                     avaiable_buttons();
