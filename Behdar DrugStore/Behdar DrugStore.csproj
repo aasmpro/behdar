@@ -73,25 +73,36 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>BehdarDataSet.xsd</DependentUpon>
     </Compile>
-    <Compile Include="BehdarDS.cs">
+    <Compile Include="Controlers\DfactoryC.cs" />
+    <Compile Include="Controlers\DrugC.cs" />
+    <Compile Include="Controlers\InsuranceC.cs" />
+    <Compile Include="Controlers\PrescriptionC.cs" />
+    <Compile Include="Controlers\PresDrugC.cs" />
+    <Compile Include="Controlers\UserC.cs" />
+    <Compile Include="Models\Dfactory.cs" />
+    <Compile Include="Models\Drug.cs" />
+    <Compile Include="Models\Insurance.cs" />
+    <Compile Include="Models\Prescription.cs" />
+    <Compile Include="Models\PresDrug.cs" />
+    <Compile Include="Models\User.cs" />
+    <Compile Include="Views\BehdarDS.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="BehdarDS.Designer.cs">
+    <Compile Include="Views\BehdarDS.Designer.cs">
       <DependentUpon>BehdarDS.cs</DependentUpon>
     </Compile>
-    <Compile Include="Data.cs" />
-    <Compile Include="Form1.cs">
+    <Compile Include="Views\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
+    <Compile Include="Views\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="BehdarDS.resx">
+    <EmbeddedResource Include="Views\BehdarDS.resx">
       <DependentUpon>BehdarDS.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form1.resx">
+    <EmbeddedResource Include="Views\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -182,5 +193,6 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

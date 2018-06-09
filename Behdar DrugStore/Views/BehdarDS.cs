@@ -7,46 +7,54 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Behdar_DrugStore.Controlers;
+using Behdar_DrugStore.Models;
 
 namespace Behdar_DrugStore
 {
     public partial class BehdarDS : Form
     {
+        UserC UserC;
+        DrugC DrugC = new DrugC();
+        DfactoryC DfactoryC = new DfactoryC();
+        InsuranceC InsuranceC = new InsuranceC();
+        PresDrugC PresDrugC = new PresDrugC();
+        PrescriptionC PrescriptionC = new PrescriptionC();
+
         string[] separators = { "[", "]", " " };
         Point p, pp;
         bool move;
-        public BehdarDS()
+
+        public BehdarDS(UserC uc)
         {
             InitializeComponent();
+            UserC = uc;
         }
 
         private void BehdarDS_Load(object sender, EventArgs e)
         {
-            //// TODO: This line of code loads data into the 'behdarDataSet.presdrug' table. You can move, or remove it, as needed.
-            //this.presdrugTableAdapter.Fill(this.behdarDataSet.presdrug);
-            //// TODO: This line of code loads data into the 'behdarDataSet.prescription' table. You can move, or remove it, as needed.
-            //this.prescriptionTableAdapter.Fill(this.behdarDataSet.prescription);
-            //// TODO: This line of code loads data into the 'behdarDataSet.drug' table. You can move, or remove it, as needed.
-            //this.drugTableAdapter.Fill(this.behdarDataSet.drug);
-            //// TODO: This line of code loads data into the 'behdarDataSet.insurance' table. You can move, or remove it, as needed.
-            //this.insuranceTableAdapter.Fill(this.behdarDataSet.insurance);
-            //// TODO: This line of code loads data into the 'behdarDataSet.dfactory' table. You can move, or remove it, as needed.
-            //this.dfactoryTableAdapter.Fill(this.behdarDataSet.dfactory);
-            //// TODO: This line of code loads data into the 'behdarDataSet.user' table. You can move, or remove it, as needed.
-            //this.userTableAdapter.Fill(this.behdarDataSet.user);
+            UserC.All();
+            userGridView.DataSource = UserC.DT;
+            UserC.All(cbPresU);
 
-            Data.FillAll();
-            userGridView.DataSource = Data.userDT;
-            drugGridView.DataSource = Data.drugDT;
-            insGridView.DataSource = Data.insuranceDT;
-            presdrugGridView.DataSource = Data.presdrugDT;
-            presGridView.DataSource = Data.prescriptionDT;
-            facGridView.DataSource = Data.dfactoryDT;
-            Data.FillCB(cbPresI, "insurance");
-            Data.FillCB(cbPresU, "user");
-            Data.FillCB(cbDrugF, "dfactory");
+            DrugC.All();
+            drugGridView.DataSource = DrugC.DT;
 
-            if (Data.logedin_type == "1" || Data.logedin_type == "2")
+            InsuranceC.All();
+            insGridView.DataSource = InsuranceC.DT;
+            InsuranceC.All(cbPresI);
+
+            PresDrugC.All();
+            presdrugGridView.DataSource = PresDrugC.DT;
+
+            PrescriptionC.All();
+            presGridView.DataSource = PrescriptionC.DT;
+
+            DfactoryC.All();
+            facGridView.DataSource = DfactoryC.DT;
+            DfactoryC.All(cbDrugF);
+
+            if (UserC.logedin_user.type == 1 || UserC.logedin_user.type == 2)
             {
                 butUser.Visible = false;
                 butSal.Visible = false;
@@ -154,7 +162,7 @@ namespace Behdar_DrugStore
                     button1.Visible = false;
                     butCls.PerformClick();
                 }
-                else if (userGridView.SelectedRows[0].Cells[0].Value.ToString() == Data.logedin_username)
+                else if (userGridView.SelectedRows[0].Cells[0].Value.ToString() == UserC.logedin_user.username)
                 {
                     butDelete.Visible = false;
                 }
@@ -185,11 +193,11 @@ namespace Behdar_DrugStore
         private void tabResDrugs_Enter(object sender, EventArgs e)
         {
             sacd_v(false);
-            Data.drugTA.FillByExistDrug(Data.drugQDT);
-            drugsGridView.DataSource = Data.drugQDT;
+            DrugC.All(true);
+            drugsGridView.DataSource = DrugC.QDT;
 
-            Data.presdrugTA.FillByPresDrugs(Data.presdrugDT, int.Parse(presGridView.SelectedRows[0].Cells[0].Value.ToString()));
-            presdrugGridView.DataSource = Data.presdrugDT;
+            PresDrugC.All(int.Parse(presGridView.SelectedRows[0].Cells[0].Value.ToString()));
+            presdrugGridView.DataSource = PresDrugC.DT;
         }
         private void tabResDrugs_Leave(object sender, EventArgs e)
         {
@@ -330,7 +338,7 @@ namespace Behdar_DrugStore
                 cbUserT.SelectedIndex = int.Parse(userGridView.SelectedRows[0].Cells[5].Value.ToString());
                 cbUserS.SelectedIndex = int.Parse(userGridView.SelectedRows[0].Cells[6].Value.ToString());
 
-                if(tbUserU.Text == Data.logedin_username)
+                if(tbUserU.Text == UserC.logedin_user.username)
                 {
                     butDelete.Visible = false;
                 }
@@ -407,30 +415,16 @@ namespace Behdar_DrugStore
                 return;
             }
 
-            if(Pins > -1)
+            if (update)
             {
-                if (update)
-                {
-                    Data.prescriptionTA.UpdatePrescription(flname: tbPresN.Text, ncode: tbPresNC.Text, creator: Puser, insurance: Pins, date: DateTime.Now, int.Parse(presGridView.SelectedRows[0].Cells[0].Value.ToString()));
-                }
-                else
-                {
-                    Data.prescriptionTA.Insert(flname: tbPresN.Text, ncode: tbPresNC.Text, creator: Puser, insurance: Pins, date: DateTime.Now);
-                }
+                PrescriptionC.Update(flname: tbPresN.Text, ncode: tbPresNC.Text, creator: Puser, insurance: Pins, date: DateTime.Now, int.Parse(presGridView.SelectedRows[0].Cells[0].Value.ToString()));
             }
             else
             {
-                if (update)
-                {
-                    Data.prescriptionTA.UpdatePrescription(flname: tbPresN.Text, ncode: tbPresNC.Text, creator: Puser, insurance: null, date: DateTime.Now, int.Parse(presGridView.SelectedRows[0].Cells[0].Value.ToString()));
-                }
-                else
-                {
-                    Data.prescriptionTA.Insert(flname: tbPresN.Text, ncode: tbPresNC.Text, creator: Puser, insurance: null, date: DateTime.Now);
-                }
+                PrescriptionC.Insert(flname: tbPresN.Text, ncode: tbPresNC.Text, creator: Puser, insurance: Pins, date: DateTime.Now);
             }
-
-            Data.FillPrescription();
+            
+            PrescriptionC.All();
             presGridView.Refresh();
             avaiable_buttons();
         }
@@ -448,32 +442,17 @@ namespace Behdar_DrugStore
                 Error("لطفا نوع دارو را وارد کنید");
                 return;
             }
-            if(Ddfac > -1)
+
+            if (update)
             {
-                if (update)
-                {
-                    Data.drugTA.UpdateDrug(tbDrugN.Text, tbDrugT.Text, int.Parse(nmDrugP.Value.ToString()), Ddfac, int.Parse(nmDrugA.Value.ToString()), int.Parse(drugGridView.SelectedRows[0].Cells[0].Value.ToString()));
-                }
-                else
-                {
-                    Data.drugTA.Insert(tbDrugN.Text, tbDrugT.Text, int.Parse(nmDrugP.Value.ToString()), Ddfac, int.Parse(nmDrugA.Value.ToString()));
-                }
-                
+                DrugC.Update(tbDrugN.Text, tbDrugT.Text, int.Parse(nmDrugP.Value.ToString()), Ddfac, int.Parse(nmDrugA.Value.ToString()), int.Parse(drugGridView.SelectedRows[0].Cells[0].Value.ToString()));
             }
             else
             {
-                if (update)
-                {
-                    Data.drugTA.UpdateDrug(tbDrugN.Text, tbDrugT.Text, int.Parse(nmDrugP.Value.ToString()), null, int.Parse(nmDrugA.Value.ToString()), int.Parse(drugGridView.SelectedRows[0].Cells[0].Value.ToString()));
-                }
-                else
-                {
-                    Data.drugTA.Insert(tbDrugN.Text, tbDrugT.Text, int.Parse(nmDrugP.Value.ToString()), null, int.Parse(nmDrugA.Value.ToString()));
-                }
-                
+                DrugC.Insert(tbDrugN.Text, tbDrugT.Text, int.Parse(nmDrugP.Value.ToString()), Ddfac, int.Parse(nmDrugA.Value.ToString()));
             }
 
-            Data.FillDrug();
+            DrugC.All();
             drugGridView.Refresh();
             presGridView_SelectionChanged(null, EventArgs.Empty);
             avaiable_buttons();
@@ -494,16 +473,16 @@ namespace Behdar_DrugStore
 
             if (update)
             {
-                Data.dfactoryTA.UpdateDfactory(tbFacN.Text, tbFacI.Text, int.Parse(facGridView.SelectedRows[0].Cells[0].Value.ToString()));
+                DfactoryC.Update(tbFacN.Text, tbFacI.Text, int.Parse(facGridView.SelectedRows[0].Cells[0].Value.ToString()));
             }
             else
             {
-                Data.dfactoryTA.Insert(tbFacN.Text, tbFacI.Text);
+                DfactoryC.Insert(tbFacN.Text, tbFacI.Text);
             }
             
-            Data.FillDFactory();
+            DfactoryC.All();
             facGridView.Refresh();
-            Data.FillCB(cbDrugF, "dfactory");
+            DfactoryC.All(cbDrugF);
             avaiable_buttons();
         }
         private void InsertIns(bool update = false)
@@ -517,16 +496,16 @@ namespace Behdar_DrugStore
 
             if (update)
             {
-                Data.insuranceTA.UpdateInsurance(tbInsN.Text, float.Parse(nmInsOff.Value.ToString()), int.Parse(insGridView.SelectedRows[0].Cells[0].Value.ToString()));
+                InsuranceC.Update(tbInsN.Text, float.Parse(nmInsOff.Value.ToString()), int.Parse(insGridView.SelectedRows[0].Cells[0].Value.ToString()));
             }
             else
             {
-                Data.insuranceTA.Insert(tbInsN.Text, float.Parse(nmInsOff.Value.ToString()));
+                InsuranceC.Insert(tbInsN.Text, float.Parse(nmInsOff.Value.ToString()));
             }
-            
-            Data.FillInsurance();
+
+            InsuranceC.All();
             insGridView.Refresh();
-            Data.FillCB(cbPresI, "insurance");
+            InsuranceC.All(cbPresI);
             avaiable_buttons();
         }
         private void InsertUser(bool update = false)
@@ -539,8 +518,8 @@ namespace Behdar_DrugStore
             }
             else if (update == false)
             {
-                Data.userTA.FillByFind(Data.userQDT, tbUserU.Text);
-                if (Data.userQDT.Count > 0)
+                User user = UserC.Find(tbUserU.Text);
+                if (user.username != null)
                 {
                     Error("این نام کاربری در سیستم موجود است لطفا نام کاربری دیگری را وارد کنید");
                     return;
@@ -576,29 +555,29 @@ namespace Behdar_DrugStore
             {
                 if (userGridView.SelectedRows[0].Cells[0].Value.ToString() != tbUserU.Text )
                 {
-                    Data.userTA.FillByFind(Data.userQDT, tbUserU.Text);
-                    if (Data.userQDT.Count > 0)
+                    User user = UserC.Find(tbUserU.Text);
+                    if (user.username != null)
                     {
                         Error("این نام کاربری در سیستم موجود است لطفا نام کاربری دیگری را وارد کنید");
                         return;
                     }
                 }
 
-                Data.userTA.UpdateLocals(tbUserU.Text, tbUserN.Text, tbUserL.Text, tbUserNC.Text, cbUserT.SelectedIndex, cbUserS.SelectedIndex, userGridView.SelectedRows[0].Cells[0].Value.ToString());
-                if(Data.logedin_username == userGridView.SelectedRows[0].Cells[0].Value.ToString())
+                UserC.Update(tbUserU.Text, tbUserN.Text, tbUserL.Text, tbUserNC.Text, cbUserT.SelectedIndex, cbUserS.SelectedIndex, userGridView.SelectedRows[0].Cells[0].Value.ToString());
+                if(UserC.logedin_user.username == userGridView.SelectedRows[0].Cells[0].Value.ToString())
                 {
-                    Data.logedin_username = tbUserU.Text;
+                    UserC.logedin_user = UserC.Find(tbUserU.Text);
                 }
             }
             else
             {
-                Data.userTA.Insert(tbUserU.Text, tbUserU.Text, tbUserN.Text, tbUserL.Text, tbUserNC.Text, cbUserT.SelectedIndex, cbUserS.SelectedIndex);
+                UserC.Insert(tbUserU.Text, tbUserU.Text, tbUserN.Text, tbUserL.Text, tbUserNC.Text, cbUserT.SelectedIndex, cbUserS.SelectedIndex);
                 MessageBox.Show("کلمه عبور کاربر جدید، بصورت پیشفرض برابر با نام کاربری کاربر است");
             }
 
-            Data.FillUser();
+            UserC.All();
             userGridView.Refresh();
-            Data.FillCB(cbPresU, "user");
+            UserC.All(cbPresU);
             avaiable_buttons();
         }
         private void butAddD_Click(object sender, EventArgs e)
@@ -608,28 +587,27 @@ namespace Behdar_DrugStore
             }
             int pres = int.Parse(presGridView.SelectedRows[0].Cells[0].Value.ToString());
             int drug = int.Parse(drugsGridView.SelectedRows[0].Cells[0].Value.ToString());
-            Data.presdrugTA.FillByFind(Data.presdrugQDT ,pres, drug);
-            if(Data.presdrugQDT.Count() > 0)
+            PresDrug pd = PresDrugC.Find(pres, drug);
+            if(pd.prescription.id > -1)
             {
-                int nam = int.Parse(nmAddD.Value.ToString()) + int.Parse(Data.presdrugQDT.Rows[0][2].ToString());
-                Data.presdrugTA.UpdatePresdrug(nam, pres, drug);
+                int nam = int.Parse(nmAddD.Value.ToString()) + pd.amount;
+                PresDrugC.Update(nam, pres, drug);
             }
             else
             {
-                Data.presdrugTA.Insert(pres, drug, int.Parse(nmAddD.Value.ToString()));
+                PresDrugC.Insert(pres, drug, int.Parse(nmAddD.Value.ToString()));
             }
 
             int mam = int.Parse(drugsGridView.SelectedRows[0].Cells[5].Value.ToString()) - int.Parse(nmAddD.Value.ToString());
-            Data.drugTA.UpdateDrugAmount(mam, drug);
+            DrugC.Update(mam, drug);
 
+            DrugC.All(true);
+            drugsGridView.DataSource = DrugC.DT;
 
-            Data.drugTA.FillByExistDrug(Data.drugQDT);
-            drugsGridView.DataSource = Data.drugQDT;
+            PresDrugC.All(int.Parse(presGridView.SelectedRows[0].Cells[0].Value.ToString()));
+            presdrugGridView.DataSource = PresDrugC.DT;
 
-            Data.presdrugTA.FillByPresDrugs(Data.presdrugDT, int.Parse(presGridView.SelectedRows[0].Cells[0].Value.ToString()));
-            presdrugGridView.DataSource = Data.presdrugDT;
-
-            Data.FillDrug();
+            DrugC.All();
             drugGridView.Refresh();
             avaiable_buttons();
 
@@ -680,7 +658,7 @@ namespace Behdar_DrugStore
                 return;
             }
 
-            Data.userTA.UpdatePassword(tbUserPP.Text, tbUserUP.Text);
+            UserC.Update(tbUserPP.Text, tbUserUP.Text);
             Content.SelectedTab = tabUser;
             MessageBox.Show("کلمه عبور جدید ثبت شد");
         }
@@ -693,54 +671,47 @@ namespace Behdar_DrugStore
             {
                 if (Content.SelectedTab == tabRes)
                 {
-                    Data.prescriptionTA.DeletePrescription(int.Parse(presGridView.SelectedRows[0].Cells[0].Value.ToString()));
-                    Data.FillPrescription();
+                    PrescriptionC.Delete(int.Parse(presGridView.SelectedRows[0].Cells[0].Value.ToString()));
+                    PrescriptionC.All();
                     presGridView.Refresh();
                     avaiable_buttons();
                 }
                 else if (Content.SelectedTab == tabDrug)
                 {
-                    try
-                    {
-                        Data.drugTA.DeleteDrug(int.Parse(drugGridView.SelectedRows[0].Cells[0].Value.ToString()));
-                    }
-                    catch
-                    {
-                        MessageBox.Show("به دلیل وجود ارجاعاتی در نسخه ها به این دارو، این دارو قابل حذف نیست");
-                    }
-                    Data.FillDrug();
+                    DrugC.Delete(int.Parse(drugGridView.SelectedRows[0].Cells[0].Value.ToString()));
+                    DrugC.All();
                     drugGridView.Refresh();
                     avaiable_buttons();
                 }
                 else if (Content.SelectedTab == tabFac)
                 {
-                    Data.dfactoryTA.DeleteDfactory(int.Parse(facGridView.SelectedRows[0].Cells[0].Value.ToString()));
-                    Data.FillDFactory();
+                    DfactoryC.Delete(int.Parse(facGridView.SelectedRows[0].Cells[0].Value.ToString()));
+                    DfactoryC.All();
                     facGridView.Refresh();
-                    Data.FillCB(cbDrugF, "dfactory");
-                    Data.FillDrug();
+                    DfactoryC.All(cbDrugF);
+                    DrugC.All();
                     drugGridView.Refresh();
                     avaiable_buttons();
                 }
                 else if (Content.SelectedTab == tabIns)
                 {
-                    Data.insuranceTA.DeleteInsurance(int.Parse(insGridView.SelectedRows[0].Cells[0].Value.ToString()));
-                    Data.FillInsurance();
+                    InsuranceC.Delete(int.Parse(insGridView.SelectedRows[0].Cells[0].Value.ToString()));
+                    InsuranceC.All();
                     insGridView.Refresh();
-                    Data.FillCB(cbPresI, "insurance");
-                    Data.FillDrug();
+                    InsuranceC.All(cbPresI);
+                    DrugC.All();
                     drugGridView.Refresh();
-                    Data.FillPrescription();
+                    PrescriptionC.All();
                     presGridView.Refresh();
                     avaiable_buttons();
                 }
                 else if (Content.SelectedTab == tabUser)
                 {
-                    Data.userTA.DeleteUser(userGridView.SelectedRows[0].Cells[0].Value.ToString());
-                    Data.FillUser();
+                    UserC.Delete(userGridView.SelectedRows[0].Cells[0].Value.ToString());
+                    UserC.All();
                     userGridView.Refresh();
-                    Data.FillCB(cbPresU, "user");
-                    Data.FillPrescription();
+                    UserC.All(cbPresU);
+                    PrescriptionC.All();
                     presGridView.Refresh();
                     avaiable_buttons();
                 }
@@ -753,21 +724,21 @@ namespace Behdar_DrugStore
         private void butRemD_Click(object sender, EventArgs e)
         {
             int pres = int.Parse(presGridView.SelectedRows[0].Cells[0].Value.ToString());
-            int drug = int.Parse(presdrugGridView.SelectedRows[0].Cells[0].Value.ToString());
-            Data.drugTA.FillByFind(Data.drugQDT, drug);
+            int drugi = int.Parse(presdrugGridView.SelectedRows[0].Cells[0].Value.ToString());
+            Drug drug = DrugC.Find(drugi);
 
-            Data.presdrugTA.DeletePresdrug(pres, drug);
+            PresDrugC.Delete(pres, drugi);
 
-            int nam = int.Parse(presdrugGridView.SelectedRows[0].Cells[1].Value.ToString()) + int.Parse(Data.drugQDT.Rows[0][5].ToString());
-            Data.drugTA.UpdateDrugAmount(nam, drug);
+            int nam = int.Parse(presdrugGridView.SelectedRows[0].Cells[1].Value.ToString()) + drug.amount;
+            DrugC.Update(nam, drugi);
             
-            Data.drugTA.FillByExistDrug(Data.drugQDT);
-            drugsGridView.DataSource = Data.drugQDT;
+            DrugC.All(true);
+            drugsGridView.DataSource = DrugC.QDT;
 
-            Data.presdrugTA.FillByPresDrugs(Data.presdrugDT, int.Parse(presGridView.SelectedRows[0].Cells[0].Value.ToString()));
-            presdrugGridView.DataSource = Data.presdrugDT;
+            PresDrugC.All(int.Parse(presGridView.SelectedRows[0].Cells[0].Value.ToString()));
+            presdrugGridView.DataSource = PresDrugC.DT;
             
-            Data.FillDrug();
+            DrugC.All();
             drugGridView.Refresh();
             avaiable_buttons();
 
@@ -779,33 +750,31 @@ namespace Behdar_DrugStore
         private float PresPrice(int pres, int ins, out int drugs_amount, out int real_price)
         {
             float off=0;
-            Data.presdrugTA.FillByPresDrugs(Data.presdrugQDT, pres);
+            PresDrugC.All(pres, true);
             drugs_amount = 0;
             real_price = 0;
-            for (int i = 0; i < Data.presdrugQDT.Count(); i++)
+            for (int i = 0; i < PresDrugC.QDT.Count(); i++)
             {
-                Data.drugTA.FillByFind(Data.drugADT, int.Parse(Data.presdrugQDT.Rows[i][1].ToString()));
-                int drug_price = int.Parse(Data.drugADT.Rows[0][3].ToString());
-                real_price += int.Parse(Data.presdrugQDT.Rows[i][2].ToString()) * drug_price;
-                drugs_amount += int.Parse(Data.presdrugQDT.Rows[i][2].ToString());
+                Drug drug = DrugC.Find(int.Parse(PresDrugC.QDT.Rows[i][1].ToString()), true);
+                real_price += int.Parse(PresDrugC.QDT.Rows[i][2].ToString()) * drug.price;
+                drugs_amount += int.Parse(PresDrugC.QDT.Rows[i][2].ToString());
             }
 
-            Data.insuranceTA.FillByFind(Data.insuranceQDT, ins);
-            if(Data.insuranceQDT.Rows.Count > 0)
+            Insurance insurance = InsuranceC.Find(ins);
+            if(insurance.id > -1)
             {
-                off = float.Parse(Data.insuranceQDT.Rows[0][2].ToString());
-                off = off / 100;
+                off = insurance.off / 100;
             }
 
             return real_price - (real_price * off);
         }
-        
         private void FilltbACs(int pres, int ins)
         {
             int drugs_amount, real_price;
             float price = PresPrice(pres, ins, out drugs_amount, out real_price);
             tbPresACP.Text = tbPresACD.Text = string.Format("تعداد داروهای نسخه: {0} \t/\t قیمت بدون بیمه: {1} (تومان) \t/\t قیمت با بیمه: {2} (تومان)",drugs_amount, real_price, price);
         }
+
 
         // Project Github Repository
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

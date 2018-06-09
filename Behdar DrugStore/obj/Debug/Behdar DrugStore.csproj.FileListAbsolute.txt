@@ -9,3 +9,14 @@ D:\Desktop\Behdar DrugStore\Behdar DrugStore\obj\Debug\Behdar DrugStore.exe
 D:\Desktop\Behdar DrugStore\Behdar DrugStore\obj\Debug\Behdar DrugStore.pdb
 D:\Desktop\Behdar DrugStore\Behdar DrugStore\obj\Debug\Behdar_DrugStore.BehdarDS.resources
 D:\Desktop\Behdar DrugStore\Behdar DrugStore\obj\Debug\Behdar DrugStore.csprojResolveAssemblyReference.cache
+D:\Desktop\Behdar DrugStore - OOP\Behdar DrugStore\bin\Debug\Behdar DrugStore.exe.config
+D:\Desktop\Behdar DrugStore - OOP\Behdar DrugStore\bin\Debug\Behdar DrugStore.exe
+D:\Desktop\Behdar DrugStore - OOP\Behdar DrugStore\bin\Debug\Behdar DrugStore.pdb
+D:\Desktop\Behdar DrugStore - OOP\Behdar DrugStore\obj\Debug\Behdar DrugStore.csprojResolveAssemblyReference.cache
+D:\Desktop\Behdar DrugStore - OOP\Behdar DrugStore\obj\Debug\Behdar_DrugStore.BehdarDS.resources
+D:\Desktop\Behdar DrugStore - OOP\Behdar DrugStore\obj\Debug\Behdar_DrugStore.LoginForm.resources
+D:\Desktop\Behdar DrugStore - OOP\Behdar DrugStore\obj\Debug\Behdar_DrugStore.Properties.Resources.resources
+D:\Desktop\Behdar DrugStore - OOP\Behdar DrugStore\obj\Debug\Behdar DrugStore.csproj.GenerateResource.cache
+D:\Desktop\Behdar DrugStore - OOP\Behdar DrugStore\obj\Debug\Behdar DrugStore.csproj.CoreCompileInputs.cache
+D:\Desktop\Behdar DrugStore - OOP\Behdar DrugStore\obj\Debug\Behdar DrugStore.exe
+D:\Desktop\Behdar DrugStore - OOP\Behdar DrugStore\obj\Debug\Behdar DrugStore.pdb

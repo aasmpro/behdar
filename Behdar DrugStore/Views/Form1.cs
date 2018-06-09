@@ -7,11 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Behdar_DrugStore.Controlers;
+using Behdar_DrugStore.Models;
 
 namespace Behdar_DrugStore
 {
     public partial class LoginForm : Form
     {
+        UserC UserC = new UserC();
+
         public LoginForm()
         {
             InitializeComponent();
@@ -35,14 +39,13 @@ namespace Behdar_DrugStore
                 return;
             }
 
-            Data.userTA.FillByFind(Data.userDT, username.Text);
-            if(Data.userDT.Count > 0)
+            User user = UserC.Find(username.Text);
+            if(user.username != null)
             {
-                if(password.Text == Data.userDT.Rows[0][1].ToString())
+                if(password.Text == user.password)
                 {
-                    Data.logedin_username = username.Text;
-                    Data.logedin_type = Data.userDT.Rows[0][5].ToString();
-                    Form F = new BehdarDS();
+                    UserC.logedin_user = user;
+                    Form F = new BehdarDS(UserC);
                     this.Hide();
                     F.ShowDialog();
                 }
