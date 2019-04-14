@@ -1,6 +1,8 @@
 # Behdar_DrugStore
 drug store managment system, windows application (C#, SQLServer) 
 
+![screenshot](https://github.com/aasmpro/Behdar_DrugStore/blob/master/Behdar%20DrugStore%20Graphics/screenshots/Prescriptions.png)
+
 # Requirements
 ### Production
 this project had been written with `C#` using `.net framework v4` tools and use `SQL Server` as database engine. so you just need sql server installed.
