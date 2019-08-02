@@ -1,4 +1,4 @@
-# Behdar_DrugStore
+# Behdar - Drug Store Management
 drug store managment system, windows application (C#, SQLServer) 
 
 ![screenshot](https://github.com/aasmpro/Behdar_DrugStore/blob/master/Behdar%20DrugStore%20Graphics/screenshots/Prescriptions.png)
